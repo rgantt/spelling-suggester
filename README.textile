@@ -13,10 +13,10 @@ Once instantiated, run @Suggest::correct( $misspelled_word )@ to generate some s
 require_once "suggest.php";
 
 $misspells = array( 
-	"cavet", "sphagetti", "phon", "televisio", "tlevision", "definately"
+	"cavet", "phon", "televisio", "tlevision", "definately"
 );
 
-$s = new Suggest("notsobig.txt");
+$s = new Suggest("notsobig.txt"); // or big.txt
 
 foreach( $misspells as $word ) {
 	echo "you said '{$word}'. did you mean '{$s( $word )}'?\n";
@@ -28,7 +28,6 @@ Output:
 
 <pre>
 you said 'cavet'. did you mean 'cave'?
-you said 'sphagetti'. did you mean 'sphagetti'?
 you said 'phon'. did you mean 'phone'?
 you said 'televisio'. did you mean 'television'?
 you said 'tlevision'. did you mean 'television'?
