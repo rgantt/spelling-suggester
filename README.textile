@@ -8,7 +8,9 @@ To use, simply instantiate the @Suggest@ class by feeding it a dictionary. The f
 
 Once instantiated, run @Suggest::correct( $misspelled_word )@ to generate some suggestions. Training the object with the dictionary will take the majority of the time; each suggestion should be quick.
 
-pre. require_once "suggester.php";
+<pre>
+<code>
+require_once "suggester.php";
 
 $misspells = array( 
 	"crav", "cavet", "sphagetti", "fone", "phon", "televisio", "tlevision", "definately", "cnjunctin", "persue"
@@ -19,6 +21,8 @@ $s = new Suggest("notsobig.txt");
 foreach( $misspells as $word ) {
 	echo "you said '{$word}'. did you mean '{$s( $word )}'?\n";
 }
+</code>
+</pre>
 
 h3. Notes
 
