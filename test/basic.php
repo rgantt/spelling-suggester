@@ -1,5 +1,5 @@
 <?php
-require_once "../lib/suggester.php";
+require_once "../suggest.php";
 
 $misspells = array( 
 	"crav", "cavet", "sphagetti", "fone", "phon", "televisio", "tlevision", "definately", "cnjunctin", "persue"
