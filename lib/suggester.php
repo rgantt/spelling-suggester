@@ -1,5 +1,5 @@
 <?php
-ini_set("memory_limit","256M"); // can't do this without ~250MB of memory for big.txt
+ini_set("memory_limit","256M"); // can't seem to do this without ~250MB of peak memory
 
 class Suggest {
 	public $freq = array();
@@ -31,7 +31,7 @@ class Suggest {
 	}
 	
 	private function load_dict( $path ) {
-		if( !file_exists( $path ) || !is_readable( $path ) ) throw new Exception("File {$path} does not exist or is not readable.");
+		if( !file_exists( $path ) || !is_readable( $path ) ) throw new Exception("cannot read {$path}");
 		$file = file( $path );
 		$that = $this;
 		$allwords = array();
@@ -49,6 +49,7 @@ class Suggest {
 		return preg_split( '/(\w+)/', strtolower( $text ), null, PREG_SPLIT_DELIM_CAPTURE );
 	}
 	
+	// passing this by reference saves a lot of memory (5550128 vs 7712152)
 	private function train( &$features ) {
 		$model = array();
 		foreach( $features as $f ) {
@@ -92,7 +93,7 @@ class Suggest {
 	}
 	
 	private function known( $words ) {
-		$that = &$this;
+		$that = $this;
 		return array_filter( $words, function( $w ) use ( $that ){ 
 			return array_key_exists( $w, $that->freq ); 
 		});
