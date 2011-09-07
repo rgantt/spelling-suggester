@@ -1,24 +1,11 @@
 <?php
-require_once "rolex/rolex.php";
-require_once "suggester.php";
-
-use rolex\r;
+require_once "../lib/suggester.php";
 
 $misspells = array( 
 	"crav", "cavet", "sphagetti", "fone", "phon", "televisio", "tlevision", "definately", "cnjunctin", "persue"
 );
 
-$s = null;
-echo r::run( "instantiation", function() use ( &$s ){
-	$s = new Suggest("notsobig.txt");
-});
-
-echo r::run( "corrections", function() use( $s, $misspells ) {
-	foreach( $misspells as $word ) {
-		echo "you said '{$word}'. did you mean '{$s( $word )}'?\n";
-	}
-});
-
+$s = new Suggest("notsobig.txt");
 foreach( $misspells as $word ) {
 	echo "you said '{$word}'. did you mean '{$s( $word )}'?\n";
 }
