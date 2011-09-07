@@ -10,7 +10,7 @@ Once instantiated, run @Suggest::correct( $misspelled_word )@ to generate some s
 
 <pre>
 <code>
-require_once "suggester.php";
+require_once "suggest.php";
 
 $misspells = array( 
 	"cavet", "sphagetti", "phon", "televisio", "tlevision", "definately"
