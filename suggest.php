@@ -1,5 +1,7 @@
 <?php
-ini_set("memory_limit","256M"); // can't seem to do this without ~250MB of peak memory
+// error_reporting( E_ALL | E_STRICT ); // shouldn't enable, since there are in-loop-body notices
+error_reporting( E_ALL );
+ini_set("memory_limit","256M"); // can't seem to do this without ~250MB of peak memory on big.txt
 
 class Suggest {
 	public $freq = array();
@@ -49,7 +51,7 @@ class Suggest {
 		return preg_split( '/(\w+)/', strtolower( $text ), null, PREG_SPLIT_DELIM_CAPTURE );
 	}
 	
-	// passing this by reference saves a lot of memory (5550128 vs 7712152)
+	// passing this by reference saves a lot of memory at peak
 	private function train( &$features ) {
 		$model = array();
 		foreach( $features as $f ) {
