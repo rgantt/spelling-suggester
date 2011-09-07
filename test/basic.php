@@ -5,7 +5,7 @@ $misspells = array(
 	"crav", "cavet", "fone", "phon", "televisio", "tlevision", "definately", "cnjunctin", "persue"
 );
 
-$s = new Suggest("notsobig.txt");
+$s = new Suggest("big.txt");
 foreach( $misspells as $word ) {
 	echo "you said '{$word}'. did you mean '{$s( $word )}'?\n";
 }
