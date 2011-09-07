@@ -4,7 +4,15 @@ a probabilistic misspelling corrector based on "peter norvig's":http://norvig.co
 
 h2. Usage
 
-To use, simply instantiate the @Suggest@ class by feeding it a dictionary. The format of the dictionary is pretty forgiving; @Suggest@ will strip out the formatting characters and then break up all of the words according to their space-delimited boundaries.
+To use, simply instantiate the @Suggest@ class by feeding it a dictionary. 
+
+h3. Dictionaries 
+
+The format of the dictionary is pretty forgiving; @Suggest@ will strip out the formatting characters and then break up all of the words according to their space-delimited boundaries.
+
+As an added benefit, @Suggest@ will attempt to load a serialized version of whatever dictionary you give it (by appending @.freq@ to the path). Furthermore, it will attempt to write a serialized version of any frequency table it has loaded to improve performance on the next run. To use this feature, simply ensure that your dictionary file is in a directory writable by the user executing PHP.
+
+h3. Example
 
 Once instantiated, invoke the object as a function (e.g. @$s("misspeled");@ for an instance of @Suggest@ named @$s@) to generate the best suggestion for a given misspelling. Training the object with the dictionary will take the majority of the time; each suggestion should be quick.
 
