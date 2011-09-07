@@ -6,7 +6,7 @@ h2. Usage
 
 To use, simply instantiate the @Suggest@ class by feeding it a dictionary. The format of the dictionary is pretty forgiving; @Suggest@ will strip out the formatting characters and then break up all of the words according to their space-delimited boundaries.
 
-Once instantiated, run @Suggest::correct( $misspelled_word )@ to generate some suggestions. Training the object with the dictionary will take the majority of the time; each suggestion should be quick.
+Once instantiated, invoke the object as a function (e.g. @$s("misspeled");@ for an instance of @Suggest@ named @$s@) to generate the best suggestion for a given misspelling. Training the object with the dictionary will take the majority of the time; each suggestion should be quick.
 
 <pre>
 <code>
