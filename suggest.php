@@ -1,16 +1,47 @@
 <?php
-// error_reporting( E_ALL | E_STRICT ); // shouldn't enable, since there are in-loop-body notices
+// shouldn't enable, since there are in-loop-body notices due to known closure issues
+// error_reporting( E_ALL | E_STRICT );
 error_reporting( E_ALL );
-ini_set("memory_limit","256M"); // can't seem to do this without ~250MB of peak memory on big.txt
+ini_set("memory_limit","256M");
+
+/**
+ * spelling-suggester, a simple spelling corrector written for PHP 5.3, based on
+ * Peter Norvig's python implementation.
+ *
+ * this script can't seem to complete without ~250MB of peak memory on the initial 
+ * import of the ~6Mb big.txt file included in the /test directory.
+ *
+ * see the following article for more information on PHP's memory usage for arrays:
+ * http://www.pankaj-k.net/weblog/2008/03/did_you_know_that_each_integer.html
+ *
+ * see the following article for Peter Norvig's original implementation in python:
+ * http://norvig.com/spell-correct.html
+ *
+ * note that, at the expense of proper encapsulation, several attributes and methods
+ * are public where otherwise i would prefer they be private. this is to accomodate
+ * known shortcomings in PHP 5.3's handling of closures (namely that closures don't
+ * close properly over $this in object context).
+ */
 
 class Suggest {
 	public $freq = array();
 	private $alphabet = "abcdefghijklmnopqrstuvwxyz";
 	
-	public function __construct( $dict_path ) {
+	public function __construct( $dict_path, $force = false ) {
 		$this->alphabet = str_split( $this->alphabet );
+
+		$path_serialized = $dict_path . ".freq";
+		if ( file_exists( $path_serialized ) && !$force ) {
+			$this->freq = unserialize( file_get_contents( $path_serialized ) );
+			return;
+		}
+
 		$words = $this->load_dict( $dict_path );
 		$this->freq = $this->train( $words );
+
+		if ( is_writable( dirname( $path_serialized ) ) ) {
+			file_put_contents( $path_serialized, serialize( $this->freq ) );
+		}
 	}
 	
 	public function __invoke( $word ) {
@@ -46,7 +77,6 @@ class Suggest {
 		return $allwords;
 	}
 	
-	// must be public so that closures can call it... ugh
 	public function words( $text ) {
 		return preg_split( '/(\w+)/', strtolower( $text ), null, PREG_SPLIT_DELIM_CAPTURE );
 	}
