@@ -2,7 +2,7 @@
 require_once "../suggest.php";
 
 $misspells = array( 
-	"crav", "cavet", "sphagetti", "fone", "phon", "televisio", "tlevision", "definately", "cnjunctin", "persue"
+	"crav", "cavet", "fone", "phon", "televisio", "tlevision", "definately", "cnjunctin", "persue"
 );
 
 $s = new Suggest("notsobig.txt");
