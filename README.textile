@@ -35,8 +35,8 @@ foreach( $misspells as $word ) {
 Output:
 
 <pre>
-you said 'cavet'. did you mean 'cave'?
-you said 'phon'. did you mean 'phone'?
+you said 'cavet'. did you mean 'cadet'?
+you said 'phon'. did you mean 'pon'?
 you said 'televisio'. did you mean 'television'?
 you said 'tlevision'. did you mean 'television'?
 you said 'definately'. did you mean 'definitely'?
