@@ -29,6 +29,11 @@ class Suggest {
 	
 	public function __construct( $dict_path, $force = false ) {
 		$this->alphabet = str_split( $this->alphabet );
+			
+		if( is_array( $dict_path ) ) {
+			$this->freq = $this->train( $dict_path );
+			return;
+		}
 
 		$path_serialized = $dict_path . ".freq";
 		if ( file_exists( $path_serialized ) && !$force ) {
@@ -51,7 +56,7 @@ class Suggest {
 		if( empty( $candidates ) ) $candidates = array( $word );
 		$that = $this;
 		return $this->argmax( $candidates, function ( $w ) use ( $that ) {
-			$that->freq[ $w ];
+			return $that->freq[ $w ];
 		});
 	}
 	
@@ -85,7 +90,7 @@ class Suggest {
 	private function train( &$features ) {
 		$model = array();
 		foreach( $features as $f ) {
-			$model[ $f ] = !isset( $model[ $f ] ) ? 0 : $model[ $f ] + 1;
+			$model[ $f ] = !isset( $model[ $f ] ) ? 1 : $model[ $f ] + 1;
 		}
 		return $model;
 	}
@@ -127,7 +132,7 @@ class Suggest {
 	private function known( $words ) {
 		$that = $this;
 		return array_filter( $words, function( $w ) use ( $that ){ 
-			return array_key_exists( $w, $that->freq ); 
+			return array_key_exists( $w, $that->freq );
 		});
 	}
 }
