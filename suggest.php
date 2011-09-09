@@ -8,19 +8,15 @@ ini_set("memory_limit","256M");
  * spelling-suggester, a simple spelling corrector written for PHP 5.3, based on
  * Peter Norvig's python implementation.
  *
- * this script can't seem to complete without ~250MB of peak memory on the initial 
- * import of the ~6Mb big.txt file included in the /test directory.
- *
  * see the following article for more information on PHP's memory usage for arrays:
  * http://www.pankaj-k.net/weblog/2008/03/did_you_know_that_each_integer.html
  *
  * see the following article for Peter Norvig's original implementation in python:
  * http://norvig.com/spell-correct.html
  *
- * note that, at the expense of proper encapsulation, several attributes and methods
- * are public where otherwise i would prefer they be private. this is to accomodate
- * known shortcomings in PHP 5.3's handling of closures (namely that closures don't
- * close properly over $this in object context).
+ * at the expense of proper encapsulation, several members are public where otherwise 
+ * i would prefer they be private. this is to accomodate shortcomings in PHP 5.3's 
+ * handling of closures (namely that they don't close over $this in object context).
  */
 
 class Suggest {
