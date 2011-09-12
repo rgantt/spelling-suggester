@@ -2,7 +2,9 @@
 // shouldn't enable, since there are in-loop-body notices due to known closure issues
 // error_reporting( E_ALL | E_STRICT );
 error_reporting( E_ALL );
-ini_set("memory_limit","256M");
+ini_set( "memory_limit", "256M" );
+
+require_once dirname(__FILE__).'/lib/wordtrainer.php';
 
 /**
  * spelling-suggester, a simple spelling corrector written for PHP 5.3, based on
@@ -23,26 +25,14 @@ class Suggest {
 	public $freq = array();
 	private $alphabet = "abcdefghijklmnopqrstuvwxyz";
 	
+	/**
+	 * decoupled from the type of dictionary provided at the expense
+	 * of no longer being a "one-file" program
+	 */
 	public function __construct( $dict_path, $force = false ) {
 		$this->alphabet = str_split( $this->alphabet );
-			
-		if( is_array( $dict_path ) ) {
-			$this->freq = $this->train( $dict_path );
-			return;
-		}
-
-		$path_serialized = $dict_path . ".freq";
-		if ( file_exists( $path_serialized ) && !$force ) {
-			$this->freq = unserialize( file_get_contents( $path_serialized ) );
-			return;
-		}
-
-		$words = $this->load_dict( $dict_path );
-		$this->freq = $this->train( $words );
-
-		if ( is_writable( dirname( $path_serialized ) ) ) {
-			file_put_contents( $path_serialized, serialize( $this->freq ) );
-		}
+		$words = new WordTrainer( $dict_path, $force );
+		$this->freq = $words->getFrequencies();
 	}
 	
 	public function __invoke( $word ) {
@@ -62,33 +52,6 @@ class Suggest {
 			$tmp[ $cbe( $a ) ] = $a;
 		}
 		return $tmp[ max( array_flip( $tmp ) ) ];
-	}
-	
-	private function load_dict( $path ) {
-		if( !file_exists( $path ) || !is_readable( $path ) ) throw new Exception("cannot read {$path}");
-		$file = file( $path );
-		$that = $this;
-		$allwords = array();
-		array_walk( $file, function( $line ) use ( &$allwords, $that ) {
-			// E_STRICT doesn't like us using &$allwords in this closure
-			array_walk( $that->words( $line ), function( $word ) use ( &$allwords ) {
-				$allwords[] = $word;
-			});
-		});
-		return $allwords;
-	}
-	
-	public function words( $text ) {
-		return preg_split( '/(\w+)/', strtolower( $text ), null, PREG_SPLIT_DELIM_CAPTURE );
-	}
-	
-	// passing this by reference saves a lot of memory at peak
-	private function train( &$features ) {
-		$model = array();
-		foreach( $features as $f ) {
-			$model[ $f ] = !isset( $model[ $f ] ) ? 1 : $model[ $f ] + 1;
-		}
-		return $model;
 	}
 	
 	private function edits( $word ) {
