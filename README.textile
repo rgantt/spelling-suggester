@@ -12,7 +12,7 @@ The format of the dictionary is pretty forgiving; @Suggest@ will strip out the f
 
 As an added benefit, @Suggest@ will attempt to load a serialized version of whatever dictionary you give it (by appending @.freq@ to the path). Furthermore, it will attempt to write a serialized version of any frequency table it has loaded to improve performance on the next run. To use this feature, simply ensure that your dictionary file is in a directory writable by the user executing PHP.
 
-For a pre-loaded dictionaries (or, more accurately, collections of words), one can also simply pass an array of words into the constructor.
+For a pre-loaded dictionaries (or, more accurately, collections of words), one can also simply pass either an array of words or any string into the constructor.
 
 h3. Example
 
