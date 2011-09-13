@@ -22,14 +22,12 @@ class WordTrainer {
 	 */
 	public function __construct( $dict_path, $force = false ) {
 		if( is_array( $dict_path ) ) {
-			$this->words = $dict_path;
-			$this->freq = $this->train( $this->words );
+			$this->freq = $this->train( $dict_path );
 			return;
 		}
 
 		if( is_string( $dict_path ) && preg_match( "/\s/", $dict_path ) && !preg_match( "/\\\/", $dict_path ) ) {
-			$this->words = $this->words( $dict_path );
-			$this->freq = $this->train( $this->words );
+			$this->freq = $this->train( $this->words( $dict_path ) );
 			return;
 		}
 		
@@ -39,8 +37,7 @@ class WordTrainer {
 			return;
 		}
 
-		$this->words = $this->load_dict( $dict_path );
-		$this->freq = $this->train( $this->words );
+		$this->load_dict( $dict_path );
 
 		if ( is_writable( dirname( $path_serialized ) ) ) {
 			file_put_contents( $path_serialized, serialize( $this->freq ) );
@@ -51,10 +48,6 @@ class WordTrainer {
 		return $this->freq;
 	}
 	
-	public function &getWords() {
-		return $this->words;
-	}
-	
 	private function train( &$features ) {
 		$model = array();
 		foreach( $features as $f ) {
@@ -63,18 +56,20 @@ class WordTrainer {
 		return $model;
 	}
 	
+	/**
+	 * Going to do the loading and training in one step
+	 */
 	private function load_dict( $path ) {
 		if( !file_exists( $path ) || !is_readable( $path ) ) throw new Exception("cannot read {$path}");
-		$file = file( $path );
-		$that = $this;
-		$allwords = array();
-		array_walk( $file, function( $line ) use ( &$allwords, $that ) {
-			// E_STRICT doesn't like us using &$allwords in this closure
-			array_walk( $that->words( $line ), function( $word ) use ( &$allwords ) {
-				$allwords[] = $word;
-			});
-		});
-		return $allwords;
+		$file = fopen( $path, 'r' );
+		while( !feof( $file ) ) {
+			$words = $this->words( fgets( $file ) );
+			foreach( $words as $w ) {
+				if( strlen( $w = trim( $w ) ) > 0 ) {
+					$this->freq[ $w ] = !isset( $this->freq[ $w ] ) ? 1 : $this->freq[ $w ] + 1;
+				}
+			}
+		}
 	}
 	
 	public function words( $text ) {
